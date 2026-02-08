@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Malicious Node Detection{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <!-- Header Section -->
+        <div class="text-center mb-5">
+            <h1 class="display-4 fw-bold text-primary mb-3">
+                <i class="fas fa-shield-alt"></i>
+                Malicious Node Detection System
+            </h1>
+            <p class="lead text-muted">
+                A Hybrid Machine Learning Approach for High Mobility Vehicular Networks
+            </p>
+        </div>
+
+        <!-- Project Overview -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-info-circle"></i>
+                    Project Overview
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">
+                    This system implements advanced machine learning algorithms to detect malicious nodes 
+                    in high mobility vehicular networks. It uses multiple classification models to identify 
+                    various types of network attacks including denial of service, Sybil attacks, and 
+                    blackhole attacks.
+                </p>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="fw-bold text-primary">Classification Targets:</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success"></i> <strong>denial_of_service:</strong> Low, Medium, High, Very High</li>
+                            <li><i class="fas fa-check text-success"></i> <strong>sybil_attack_attempts:</strong> None, Low, Medium, High, Very High</li>
+                            <li><i class="fas fa-check text-success"></i> <strong>blackhole_attack_attempts:</strong> None, Low, Medium, High, Very High</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="fw-bold text-primary">ML Algorithms:</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-cog text-info"></i> K-Nearest Neighbors (KNN)</li>
+                            <li><i class="fas fa-cog text-info"></i> Support Vector Classifier (SVC)</li>
+                            <li><i class="fas fa-cog text-info"></i> Naive Bayes Classifier</li>
+                            <li><i class="fas fa-cog text-info"></i> Stacked Tao Tree Classifier</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dataset Upload Section -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-upload"></i>
+                    Dataset Upload
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text text-muted">
+                    Upload your vehicular network dataset to begin analysis and model training.
+                    The dataset should be in CSV format with the required features.
+                </p>
+                
+                <form action="{{ url_for('upload_dataset') }}" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="file" class="form-label fw-bold">Select Dataset File:</label>
+                        <input type="file" class="form-control" id="file" name="file" accept=".csv" required>
+                        <div class="form-text">
+                            <i class="fas fa-info-circle text-info"></i>
+                            Supported format: CSV files only
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        Upload Dataset
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-chart-line fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title">Exploratory Data Analysis</h5>
+                        <p class="card-text">Comprehensive data visualization and statistical analysis of your dataset.</p>
+                        <a href="{{ url_for('eda') }}" class="btn btn-outline-primary">Explore Data</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-trophy fa-3x text-warning mb-3"></i>
+                        <h5 class="card-title">Model Performance</h5>
+                        <p class="card-text">Compare accuracy, precision, recall, and F1-scores across all algorithms.</p>
+                        <a href="{{ url_for('performance') }}" class="btn btn-outline-warning">View Performance</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-search fa-3x text-info mb-3"></i>
+                        <h5 class="card-title">Single Prediction</h5>
+                        <p class="card-text">Make real-time predictions for individual network nodes.</p>
+                        <a href="{{ url_for('predict_single') }}" class="btn btn-outline-info">Single Predict</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Getting Started -->
+        <div class="card shadow-sm mt-4">
+            <div class="card-header bg-dark text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-rocket"></i>
+                    Getting Started
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 text-center mb-3">
+                        <div class="step-number bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 50px; height: 50px;">1</div>
+                        <h6>Upload Dataset</h6>
+                        <p class="text-muted small">Upload your vehicular network data in CSV format</p>
+                    </div>
+                    <div class="col-md-4 text-center mb-3">
+                        <div class="step-number bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 50px; height: 50px;">2</div>
+                        <h6>Explore & Train</h6>
+                        <p class="text-muted small">Analyze data with EDA and train ML models</p>
+                    </div>
+                    <div class="col-md-4 text-center mb-3">
+                        <div class="step-number bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 50px; height: 50px;">3</div>
+                        <h6>Make Predictions</h6>
+                        <p class="text-muted small">Use trained models for malicious node detection</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

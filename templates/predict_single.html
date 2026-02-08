@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block title %}Single Prediction - Malicious Node Detection{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="mb-4">
+                <i class="fas fa-search text-primary"></i>
+                Single Node Prediction
+            </h1>
+            
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-keyboard"></i>
+                        Enter Node Parameters
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('predict_single_submit') }}" method="post">
+                        <div class="row">
+                            <!-- Position and Movement -->
+                            <div class="col-md-6">
+                                <h6 class="text-primary mb-3">Position & Movement</h6>
+                                
+                                <div class="mb-3">
+                                    <label for="node_id" class="form-label">Node ID</label>
+                                    <input type="text" class="form-control" id="node_id" name="node_id" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="position_x" class="form-label">Position X</label>
+                                    <input type="number" step="any" class="form-control" id="position_x" name="position_x" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="position_y" class="form-label">Position Y</label>
+                                    <input type="number" step="any" class="form-control" id="position_y" name="position_y" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="speed" class="form-label">Speed</label>
+                                    <input type="number" step="any" class="form-control" id="speed" name="speed" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="direction" class="form-label">Direction</label>
+                                    <input type="number" step="any" class="form-control" id="direction" name="direction" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="acceleration" class="form-label">Acceleration</label>
+                                    <input type="number" step="any" class="form-control" id="acceleration" name="acceleration" required>
+                                </div>
+                            </div>
+                            
+                            <!-- Network Metrics -->
+                            <div class="col-md-6">
+                                <h6 class="text-primary mb-3">Network Metrics</h6>
+                                
+                                <div class="mb-3">
+                                    <label for="packet_sent" class="form-label">Packets Sent</label>
+                                    <input type="number" class="form-control" id="packet_sent" name="packet_sent" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="packet_received" class="form-label">Packets Received</label>
+                                    <input type="number" class="form-control" id="packet_received" name="packet_received" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="packet_drop_ratio" class="form-label">Packet Drop Ratio</label>
+                                    <input type="number" step="any" class="form-control" id="packet_drop_ratio" name="packet_drop_ratio" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="latency" class="form-label">Latency</label>
+                                    <input type="number" step="any" class="form-control" id="latency" name="latency" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="message_retransmission_count" class="form-label">Message Retransmission Count</label>
+                                    <input type="number" class="form-control" id="message_retransmission_count" name="message_retransmission_count" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <!-- Trust & Security -->
+                            <div class="col-md-6">
+                                <h6 class="text-primary mb-3">Trust & Security</h6>
+                                
+                                <div class="mb-3">
+                                    <label for="signal_strength" class="form-label">Signal Strength</label>
+                                    <input type="number" step="any" class="form-control" id="signal_strength" name="signal_strength" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="trust_score" class="form-label">Trust Score</label>
+                                    <input type="number" step="any" class="form-control" id="trust_score" name="trust_score" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="neighbor_trust_score_avg" class="form-label">Neighbor Trust Score Average</label>
+                                    <input type="number" step="any" class="form-control" id="neighbor_trust_score_avg" name="neighbor_trust_score_avg" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="historical_trust_score" class="form-label">Historical Trust Score</label>
+                                    <input type="number" step="any" class="form-control" id="historical_trust_score" name="historical_trust_score" required>
+                                </div>
+                            </div>
+                            
+                            <!-- Attack Indicators -->
+                            <div class="col-md-6">
+                                <h6 class="text-primary mb-3">Attack Indicators</h6>
+                                
+                                <div class="mb-3">
+                                    <label for="false_packet_injection" class="form-label">False Packet Injection</label>
+                                    <input type="number" class="form-control" id="false_packet_injection" name="false_packet_injection" required>
+                                </div>
+                               
+                                
+
+                                
+                            </div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-brain"></i>
+                                Make Prediction
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Prediction Results -->
+            {% if predictions %}
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-line"></i>
+                        Prediction Results
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% for target, target_predictions in predictions.items() %}
+                    <div class="mb-4">
+                        <h6 class="text-primary">{{ target.replace('_', ' ').title() }}</h6>
+                        <div class="row">
+                            {% for algo, prediction in target_predictions.items() %}
+                            <div class="col-md-3 mb-2">
+                                <div class="card border-primary">
+                                    <div class="card-body text-center p-2">
+                                        <small class="text-muted">{{ algo.upper() }}</small>
+                                        <div class="fw-bold">
+                                            {% if target == 'is_malicious' %}
+                                                {% if prediction == 0 %}
+                                                    <span class="badge bg-success">Normal</span>
+                                                {% else %}
+                                                    <span class="badge bg-danger">Malicious</span>
+                                                {% endif %}
+                                            {% else %}
+                                                <span class="badge bg-info">Level {{ prediction }}</span>
+                                            {% endif %}
+                                        </div>
+                                        {% if probabilities and target in probabilities and algo in probabilities[target] and probabilities[target][algo] %}
+                                        <small class="text-muted">
+                                            Confidence: {{ "%.1f"|format(probabilities[target][algo][prediction] * 100) }}%
+                                        </small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Sample Data -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-lightbulb"></i>
+                        Sample Values
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Use these sample values to test the prediction system:</p>
+                    <button type="button" class="btn btn-outline-info btn-sm" onclick="fillSampleData()">
+                        <i class="fas fa-fill"></i>
+                        Fill Sample Data
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function fillSampleData() {
+    document.getElementById('node_id').value = '1';
+    document.getElementById('position_x').value = '374.54';
+    document.getElementById('position_y').value = '393.64';
+    document.getElementById('speed').value = '11.21';
+    document.getElementById('direction').value = '179.88';
+    document.getElementById('acceleration').value = '1.38';
+    document.getElementById('packet_sent').value = '459';
+    document.getElementById('packet_received').value = '227';
+    document.getElementById('packet_drop_ratio').value = '0.51';
+    document.getElementById('latency').value = '83.30';
+    document.getElementById('message_retransmission_count').value = '9';
+    document.getElementById('signal_strength').value = '-74.87';
+    document.getElementById('trust_score').value = '0.73';
+    document.getElementById('neighbor_trust_score_avg').value = '0.72';
+    document.getElementById('historical_trust_score').value = '0.87';
+    document.getElementById('false_packet_injection').value = '43';
+}
+</script>
+{% endblock %}

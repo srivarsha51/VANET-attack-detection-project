@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+
+{% block title %}Exploratory Data Analysis - Malicious Node Detection{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">
+                <i class="fas fa-chart-bar text-primary"></i>
+                Exploratory Data Analysis
+            </h1>
+            
+            <!-- Dataset Information -->
+            {% if data_info %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-database"></i>
+                        Dataset Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h6 class="text-primary">Dataset Shape</h6>
+                            <p><strong>{{ data_info.shape[0] }}</strong> rows, <strong>{{ data_info.shape[1] }}</strong> columns</p>
+                        </div>
+                        <div class="col-md-9">
+                            <h6 class="text-primary">Columns</h6>
+                            <div class="d-flex flex-wrap gap-1">
+                                {% for col in data_info.columns %}
+                                <span class="badge bg-light text-dark">{{ col }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Train Models Section -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-cog"></i>
+                        Train Machine Learning Models
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p>Select algorithms to train models for malicious node detection:</p>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6 class="text-primary">Available Algorithms:</h6>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="knn" id="algo_knn" checked>
+                                <label class="form-check-label" for="algo_knn">
+                                    K-Nearest Neighbors (KNN)
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="svc" id="algo_svc" checked>
+                                <label class="form-check-label" for="algo_svc">
+                                    Support Vector Classifier (SVC)
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="nb" id="algo_nb" checked>
+                                <label class="form-check-label" for="algo_nb">
+                                    Naive Bayes Classifier
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="STT" id="algo_rf" checked>
+                                <label class="form-check-label" for="algo_rf">
+                                    Stacked Tao Tree classifier
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-primary">Classification Targets:</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-target text-danger"></i> is_malicious</li>
+                                <li><i class="fas fa-target text-warning"></i> denial_of_service</li>
+                                <li><i class="fas fa-target text-info"></i> sybil_attack_attempts</li>
+                                <li><i class="fas fa-target text-success"></i> blackhole_attack_attempts</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <button id="trainModelsBtn" class="btn btn-success btn-lg">
+                        <i class="fas fa-play"></i>
+                        Train Models
+                    </button>
+                    
+                    <div id="trainingProgress" class="mt-3" style="display: none;">
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%">
+                                Training models...
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="trainingResults" class="mt-3"></div>
+                </div>
+            </div>
+
+            <!-- EDA Plots -->
+            {% if plots %}
+            <div class="row">
+                {% for plot_name, plot_data in plots.items() %}
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header bg-primary text-white">
+                            <h6 class="card-title mb-0">
+                                {% if plot_name == 'target_distributions' %}
+                                    <i class="fas fa-chart-pie"></i> Target Variable Distributions
+                                {% elif plot_name == 'correlation_heatmap' %}
+                                    <i class="fas fa-th"></i> Feature Correlation Heatmap
+                                {% elif plot_name == 'signal_strength_boxplot' %}
+                                    <i class="fas fa-signal"></i> Signal Strength Analysis
+                                {% elif plot_name == 'latency_violin' %}
+                                    <i class="fas fa-clock"></i> Latency Distribution
+                                {% endif %}
+                            </h6>
+                        </div>
+                        <div class="card-body text-center">
+                            <img src="data:image/png;base64,{{ plot_data }}" class="img-fluid" alt="{{ plot_name }}">
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="alert alert-warning" role="alert">
+                <i class="fas fa-exclamation-triangle"></i>
+                No EDA plots available. Please upload a dataset first.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('trainModelsBtn').addEventListener('click', function() {
+    // Get selected algorithms
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+    const selectedAlgorithms = Array.from(checkboxes).map(cb => cb.value);
+    
+    if (selectedAlgorithms.length === 0) {
+        alert('Please select at least one algorithm to train.');
+        return;
+    }
+    
+    // Show progress
+    document.getElementById('trainingProgress').style.display = 'block';
+    document.getElementById('trainModelsBtn').disabled = true;
+    
+    // Send request to train models
+    fetch('/train_models', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            algorithms: selectedAlgorithms
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('trainingProgress').style.display = 'none';
+        document.getElementById('trainModelsBtn').disabled = false;
+        
+        if (data.success) {
+            document.getElementById('trainingResults').innerHTML = `
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    Models trained successfully! <a href="${window.location.origin}/performance" class="alert-link">View Performance Results</a>
+                </div>
+            `;
+        } else {
+            document.getElementById('trainingResults').innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle"></i>
+                    Error training models: ${data.error}
+                </div>
+            `;
+        }
+    })
+    .catch(error => {
+        document.getElementById('trainingProgress').style.display = 'none';
+        document.getElementById('trainModelsBtn').disabled = false;
+        document.getElementById('trainingResults').innerHTML = `
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle"></i>
+                Network error: ${error.message}
+            </div>
+        `;
+    });
+});
+</script>
+{% endblock %}
